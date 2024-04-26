@@ -1,0 +1,13 @@
+<!DOCTYPE html>
+<html>
+
+<body>
+    <h1>Upload Image</h1>
+    <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit">Upload Image</button>
+    </form>
+</body>
+
+</html>
