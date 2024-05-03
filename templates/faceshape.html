@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Face Shape Prediction</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            padding-top: 50px;
+        }
+    </style>
+</head>
+
+<body>
+    <h1>Face Shape Prediction</h1>
+    <p>Your predicted face shape is:</p>
+    <h2>{{ prediction }}</h2>
+
+    <div>
+        <video id="video" width="640" height="480" autoplay></video>
+        <button id="capture">Capture</button>
+    </div>
+
+    <script>
+        const video = document.getElementById('video');
+        const captureBtn = document.getElementById('capture');
+
+        // Get access to the webcam
+        navigator.mediaDevices.getUserMedia({ video: true })
+            .then(stream => {
+                video.srcObject = stream;
+            })
+            .catch(err => {
+                console.error('Error accessing webcam:', err);
+            });
+
+        // Capture frame on button click
+        captureBtn.addEventListener('click', () => {
+            // Send the captured frame to the server for prediction
+            // ...
+        });
+    </script>
+</body>
+
+</html>

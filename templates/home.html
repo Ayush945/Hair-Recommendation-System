@@ -4,65 +4,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Magic Mirror- Reflect your hairstyle</title>
-    <style>
-        .container {
-            display: flex;
-            justify-content: space-around;
-        }
-
-        .webcam-container,
-        .captured-image-container {
-            width: 50%;
-            text-align: center;
-        }
-    </style>
+    <title>Document</title>
 </head>
 
 <body>
-    <h1>Magic Mirror- Reflect your hairstyle</h1>
-    <div class="container">
-        <div class="webcam-container">
-            <h2>Mirror</h2>
-            <img id="webcam-image" src="" alt="No video Source">
-            <br>
-            <button onclick="closeWebcam()">Close Webcam</button>
-            <button onclick="openWebcam()">Open Webcam</button>
-        </div>
-        <div class="captured-image-container">
-            <h1>Photo</h1>
-            <img id="captured-image" src="" alt="No Image Captured" style="max-width:100%;">
-            <br>
-            <button onclick="captureImage()">Capture Image</button>
-        </div>
 
-    </div>
-
-    <script>
-        let webcamInterval;
-
-        function closeWebcam() {
-            clearInterval(webcamInterval);
-            document.getElementById('webcam-image').src = '';
-        }
-
-        function openWebcam() {
-            console.log("Opening webcam...");
-            document.getElementById('webcam-image').src = "{% url 'webcam_feed' %}";
-            console.log("Webcam opened.");
-        }
-
-        async function captureImage() {
-            try {
-                const response = await fetch("{% url 'capture_image' %}");
-                const blob = await response.blob();
-                const imageUrl = URL.createObjectURL(blob);
-                document.getElementById('captured-image').src = imageUrl;
-            } catch (error) {
-                console.error("Error:", error);
-            }
-        }
-    </script>
 </body>
 
 </html>

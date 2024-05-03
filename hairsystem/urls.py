@@ -1,12 +1,9 @@
 from django.contrib import admin
 from django.urls import path
-from . import views,webcam
+from . import views,webcam,upload_image,shapeprediction
 
 urlpatterns = [
     path('',webcam.home,name='home'),
-    path('webcam_feed/',webcam.webcam_feed,name='webcam_feed'),
-    path('capture_image/',views.capture_image,name='capture_image'),
-    path('upload/',views.upload_image,name='upload_image'),
     ]
 
 
