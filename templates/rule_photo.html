@@ -83,7 +83,6 @@
             margin-bottom: 5px;
         }
     </style>
-</head>
 
 <body>
     <div class="navbar">
@@ -96,7 +95,7 @@
             </div>
         </div>
         <div class="dropdown">
-            <a href="/svm_webcam">Webcam</a>
+            <a href="svm_webcam">Webcam</a>
             <div class="dropdown-content">
                 <a href="/svm_webcam">SVM</a>
                 <a href="/rule_based_webcam">Rule Based</a>
@@ -106,7 +105,31 @@
     <div style="text-align: center; padding-top: 20px;">
         <div>
             <h1>Magic Mirror: Reflect Your Hairstyle</h1>
+            <h3>Rule Based</h3>
             <h3>Face Shape Prediction</h3>
+        </div>
+        <div>
+            <form method="POST" enctype="multipart/form-data" action="{% url 'rule_based_predict_photo' %}"
+                onsubmit="return validateForm()">
+                {% csrf_token %}
+                <input type="file" name="image_file" id="image_file">
+                <button type="submit" name="submit">Predict</button>
+            </form>
+            <div>
+                {% if prediction %}
+                <p>Prediction: {{ prediction }}</p>
+                {% endif %}
+            </div>
+            <script>
+                function validateForm() {
+                    var imageFile = document.getElementById("image_file");
+                    if (imageFile.value === "") {
+                        alert("Please select an image file to predict!");
+                        return false;
+                    }
+                    return true;
+                }
+            </script>
         </div>
     </div>
 </body>

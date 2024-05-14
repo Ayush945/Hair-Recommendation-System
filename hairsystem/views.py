@@ -10,6 +10,22 @@ from .forms import UploadImageForm
 logger = logging.getLogger(__name__)
 
 
+
+def webcam_page(request):
+    return render(request,'webcam.html')
+
+def photo_page(request):
+    return render(request,'photo.html')
+
+def home(request):
+    return render(request,'home.html')
+
+def rule_based_photo_page(request):
+    return render(request,'rule_photo.html')
+
+def rule_based_webcam_page(request):
+    return render(request,'rule_webcam.html')
+
 def capture_image(request):
     try:
         svm_model = joblib.load('C:\\\\Users\\\\admin\\\\Downloads\\\\svm_model.pkl')

@@ -106,8 +106,53 @@
     <div style="text-align: center; padding-top: 20px;">
         <div>
             <h1>Magic Mirror: Reflect Your Hairstyle</h1>
+            <h3>SVM Model</h3>
             <h3>Face Shape Prediction</h3>
         </div>
+        <div id="webcam-container">
+            <video id="webcam" width="320" height="240" autoplay muted></video>
+            <button id="openWebcamBtn" disabled>Open Webcam</button>
+            <button id="captureImageBtn" disabled>Capture Image</button>
+            <canvas id="capturedImageCanvas" style="display: none;"></canvas>
+            <form id="captureImageForm" method="POST" enctype="multipart/form-data" action="{% url 'photo_predict' %}"
+                style="display: none;">
+                {% csrf_token %}
+                <input type="hidden" id="capturedImageData" name="captured_image">
+            </form>
+        </div>
+    </div>
+
+    <script>
+        const webcam = document.getElementById('webcam');
+        const openWebcamBtn = document.getElementById('openWebcamBtn');
+        const captureImageBtn = document.getElementById('captureImageBtn');
+        const capturedImageCanvas = document.getElementById('capturedImageCanvas');
+        const capturedImageDataInput = document.getElementById('capturedImageData');
+        const captureImageForm = document.getElementById('captureImageForm');
+
+        navigator.mediaDevices.getUserMedia({ video: true })
+            .then(stream => {
+                webcam.srcObject = stream;
+                openWebcamBtn.disabled = true;
+                captureImageBtn.disabled = false;
+            })
+            .catch(error => {
+                console.error("Error accessing webcam:", error);
+            });
+
+        captureImageBtn.addEventListener('click', () => {
+            const context = capturedImageCanvas.getContext('2d');
+            capturedImageCanvas.width = webcam.videoWidth;
+            capturedImageCanvas.height = webcam.videoHeight;
+            context.drawImage(webcam, 0, 0);
+
+            const capturedImageData = capturedImageCanvas.toDataURL('image/jpeg');
+            capturedImageDataInput.value = capturedImageData;
+
+            captureImageForm.submit();
+        });
+    </script>
+
     </div>
 </body>
 

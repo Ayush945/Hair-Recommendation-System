@@ -108,6 +108,23 @@
             <h1>Magic Mirror: Reflect Your Hairstyle</h1>
             <h3>Face Shape Prediction</h3>
         </div>
+        <div>
+            {% if prediction %}
+            <h1>Prediction: {{ prediction }}</h1>
+            {% endif %}
+        </div>
+        <div>
+            {% if hairstyles %}
+            <h2>Hairstyle based on face shape:</h2>
+            <ul>
+                {% for hairstyle in hairstyles %}
+                <li>{{ hairstyle.hairName }}</li>
+                {% endfor %}
+            </ul>
+            {% else %}
+            <p>No hairstyles found for the predicted face shape.</p>
+            {% endif %}
+        </div>
     </div>
 </body>
 
