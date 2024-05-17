@@ -7,7 +7,7 @@
     <title>Face Shape Prediction</title>
     <style>
         * {
-            margin: 0;
+            margin: 10px 0;
             padding: 0;
             box-sizing: border-box;
         }
@@ -84,6 +84,29 @@
             margin-bottom: 5px;
         }
 
+        .feedback-container {
+            margin-top: 20px;
+            text-align: center;
+        }
+
+        .feedback-area {
+            width: 40%;
+            resize: vertical;
+            padding: 5px;
+            border: 1px solid #ccc;
+            font-family: inherit;
+        }
+
+        .feedback-button {
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+
         .footer {
             background-color: #333;
             color: #fff;
@@ -116,9 +139,9 @@
             <h1>Magic Mirror: Reflect Your Hairstyle</h1>
             <h3>Face Shape Prediction</h3>
         </div>
-        <div>
+        <div style="margin-top: 5%;">
             {% if prediction %}
-            <h1>Prediction: {{ prediction }}</h1>
+            <h2>Face shape prediction: {{ prediction }}</h2>
             {% endif %}
         </div>
         <div>
@@ -133,7 +156,20 @@
             <p>No hairstyles found for the predicted face shape.</p>
             {% endif %}
         </div>
+        <div class="feedback-container" style="margin-top: 5%;">
+            <label for="feedback">Enter your feedback here:</label><br>
+            <textarea id="feedback" maxlength="100" class="feedback-area"></textarea><br>
+            <button type="button" onclick="sendFeedback()" class="feedback-button">Send Feedback</button>
+        </div>
+
     </div>
+    <script>
+        function sendFeedback() {
+            const feedbackText = document.getElementById("feedback").value;
+            alert("Thank you for your feedback!");
+        }
+    </script>
+
 </body>
 
 </html>
