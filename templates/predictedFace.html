@@ -156,6 +156,16 @@
             <p>No hairstyles found for the predicted face shape.</p>
             {% endif %}
         </div>
+        <div style="margin-top: 5%;">
+            {% if image_data %}
+            <h2>Image:</h2>
+            <img src="data:image/jpeg;base64,{{ image_data }}" alt="Uploaded Image">
+            {% else %}
+            <p>No Image Found.</p>
+            {% endif %}
+        </div>
+
+
         <div class="feedback-container" style="margin-top: 5%;">
             <label for="feedback">Enter your feedback here:</label><br>
             <textarea id="feedback" maxlength="100" class="feedback-area"></textarea><br>

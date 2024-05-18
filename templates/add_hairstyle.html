@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Add Data</title>
+</head>
+
+<body>
+    <h1>Add Hairstyle</h1>
+    <form method="post" action="{% url 'add_hair_data' %}">
+        {% csrf_token %}
+        <label>Hairstyle:</label>
+        <input type="text" id="hair_style_id" name="hair_style">
+        <input type="text" name="file">
+        <button type="submit">Add Hairstyle</button>
+    </form>
+</body>
+
+</html>

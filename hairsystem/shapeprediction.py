@@ -37,9 +37,16 @@ def predict_face_shape(request):
 
         face_shape=label.inverse_transform(prediction)
         
+        ret, buffer = cv2.imencode('.jpg', frame)
+        image_as_string = base64.b64encode(buffer).decode('utf-8')
         # Render the prediction in the template
         hairstyles = get_hairstyles_for_face_shape(face_shape[0])
-        return render(request, 'predictedFace.html', {'prediction': face_shape[0],'hairstyles': hairstyles})
+
+        return render(request, 'predictedFace.html', {
+            'prediction': face_shape[0],
+            'hairstyles': hairstyles,
+            'image_data': image_as_string,
+        })
     else:
         return render(request, 'predictedFace.html',{'prediction':'Unable To Classify'})
 

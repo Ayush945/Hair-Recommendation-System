@@ -13,14 +13,6 @@
         <input type="text" id="face_shape_id" name="face_shape">
         <button type="submit">Add Face Shape</button>
     </form>
-    <h1>Add Hairstyle</h1>
-    <form method="post" action="{% url 'add_hair_data' %}">
-        {% csrf_token %}
-        <label>Hairstyle:</label>
-        <input type="text">
-        <button type="submit">Add Hairstyle</button>
-    </form>
-
 </body>
 
 </html>

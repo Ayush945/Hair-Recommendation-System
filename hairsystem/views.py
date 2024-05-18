@@ -27,3 +27,8 @@ def rule_based_webcam_page(request):
 
 def add_data_page(request):
     return render(request,'add_data.html')
+
+def add_hair(request):
+    return render(request,'add_hairstyle.html')
+
+

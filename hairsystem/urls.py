@@ -1,6 +1,6 @@
 from django.urls import path
 from . import shapeprediction
-from .views import webcam_page,photo_page,home,rule_based_photo_page,rule_based_webcam_page,add_data_page
+from .views import webcam_page,photo_page,home,rule_based_photo_page,rule_based_webcam_page,add_data_page,add_hair
 from .upload_image import webcam_face
 from .rule_based_photo import ruleBasedPredictPhoto
 from.rule_based_webcam import ruleBasedPredictWebcam
@@ -25,8 +25,11 @@ urlpatterns = [
     path('rule_based_predict_photo',ruleBasedPredictPhoto,name='rule_based_predict_photo'),
     path('rule_based_predict_webcam',ruleBasedPredictWebcam,name='rule_based_predict_webcam'),
 
-    #path to add face shape and hairstyle to database
+    #path to add face shape to database
     path('add_data/', add_data, name='add_data'),
     path('form',add_data_page),
-    path('add_hair_data',add_hair_data)
+
+    #path to add hairstyle to database
+    path('add_hair',add_hair),
+    path('add_hair_data/',add_hair_data, name='add_hair_data'),
 ]                   

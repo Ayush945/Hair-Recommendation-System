@@ -11,4 +11,10 @@ def add_data(request):
   return render(request, 'add_data.html')
 
 def add_hair_data(request):
-  return False
+  if request.method == 'POST':
+    givenHairStyle=request.POST.get('hair_style')
+    image=request.POST.get('file')
+    hairStyle=Hairstyle(hairName=givenHairStyle,face_shape_id=10,image_path=image)
+    hairStyle.save()
+    return render(request, 'add_hairstyle.html')
+  return render(request, 'add_hairstyle.html')
