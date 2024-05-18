@@ -7,4 +7,5 @@ class FaceShape(models.Model):
 
 class Hairstyle(models.Model):
     hairName=models.CharField(max_length=100)
+    image_path=models.ImageField(upload_to='hairstyles/', default='default.jpg')
     face_shape=models.ForeignKey(FaceShape,on_delete=models.CASCADE,related_name='face_hairstyle')
