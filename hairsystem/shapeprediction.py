@@ -3,15 +3,12 @@ import joblib
 import cv2
 import numpy as np
 from mtcnn.mtcnn import MTCNN
-from pathlib import Path
 from keras_facenet import FaceNet
 from django.shortcuts import render
-import tkinter as tk
-from PIL import Image,ImageTk
 import os
-from django.http import JsonResponse,HttpResponse
 import base64
 from django.views.decorators.csrf import csrf_exempt
+from .swaphair import swap_hair
 
 #Load the model and label
 os.environ['TF_CPP_MIN_LOG_LEVEL']='2'
@@ -21,27 +18,24 @@ label=joblib.load('C:\\\\Users\\\\admin\\\\Downloads\\\\label_encoder_SVM.joblib
 
 def predict_face_shape(request):
     if request.method == 'POST':
-        # Get the uploaded image file
         image_file = request.FILES.get('image_file')
         
-        # Load the image file using OpenCV
+        
         image_data = image_file.read()
         nparr = np.frombuffer(image_data, np.uint8)
         frame = cv2.imdecode(nparr, cv2.IMREAD_COLOR)
 
-        # Preprocess the image
         preprocessed_image = preprocess_image(frame)
-
-        # Make a prediction
         prediction = svm_model.predict(preprocessed_image)
-
+        
         face_shape=label.inverse_transform(prediction)
         
-        ret, buffer = cv2.imencode('.jpg', frame)
-        image_as_string = base64.b64encode(buffer).decode('utf-8')
-        # Render the prediction in the template
         hairstyles = get_hairstyles_for_face_shape(face_shape[0])
-
+        for i in hairstyles:
+            print(i.image_path)
+            swapimage=swap_hair(frame,i.image_path)
+            ret, buffer = cv2.imencode('.jpg', swapimage)
+            image_as_string = base64.b64encode(buffer).decode('utf-8')
         return render(request, 'predictedFace.html', {
             'prediction': face_shape[0],
             'hairstyles': hairstyles,
@@ -64,11 +58,10 @@ def preprocess_image(image):
 
 def get_embedding(face_img):
     embedder=FaceNet()
-    face_img=face_img.astype('float32')#3D(160X160X3)
+    face_img=face_img.astype('float32')
     face_img=np.expand_dims(face_img,axis=0)
-    #4D (NONEX160X160X3)
     yhat=embedder.embeddings(face_img)
-    return yhat[0]  # 512D image (1x1x12)
+    return yhat[0]
 
 def get_hairstyles_for_face_shape(face_shape_name):
     try:
@@ -77,3 +70,4 @@ def get_hairstyles_for_face_shape(face_shape_name):
         return hairstyles
     except FaceShape.DoesNotExist:
         return None
+

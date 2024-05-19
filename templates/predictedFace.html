@@ -144,18 +144,16 @@
             <h2>Face shape prediction: {{ prediction }}</h2>
             {% endif %}
         </div>
-        <div style="margin-top: 5%;">
-            {% if hairstyles %}
-            <h2>Hairstyle based on face shape:</h2>
-            <ul>
-                {% for hairstyle in hairstyles %}
-                <li>{{ hairstyle.hairName }}</li>
-                {% endfor %}
-            </ul>
-            {% else %}
-            <p>No hairstyles found for the predicted face shape.</p>
-            {% endif %}
-        </div>
+        {% if hairstyles %}
+        <h2>Hairstyle based on face shape:</h2>
+        <ul>
+            {% for hairstyle in hairstyles %}
+            <li>{{ hairstyle.hairName }}</li>
+            {% endfor %}
+        </ul>
+        {% else %}
+        <p>No hairstyles found for the predicted face shape.</p>
+        {% endif %}
         <div style="margin-top: 5%;">
             {% if image_data %}
             <h2>Image:</h2>
@@ -164,13 +162,15 @@
             <p>No Image Found.</p>
             {% endif %}
         </div>
+    </div>
 
 
-        <div class="feedback-container" style="margin-top: 5%;">
-            <label for="feedback">Enter your feedback here:</label><br>
-            <textarea id="feedback" maxlength="100" class="feedback-area"></textarea><br>
-            <button type="button" onclick="sendFeedback()" class="feedback-button">Send Feedback</button>
-        </div>
+
+    <div class="feedback-container" style="margin-top: 5%;">
+        <label for="feedback">Enter your feedback here:</label><br>
+        <textarea id="feedback" maxlength="100" class="feedback-area"></textarea><br>
+        <button type="button" onclick="sendFeedback()" class="feedback-button">Send Feedback</button>
+    </div>
 
     </div>
     <script>
