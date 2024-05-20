@@ -1,6 +1,6 @@
 from django.urls import path
 from . import shapeprediction
-from .views import webcam_page,photo_page,home,rule_based_photo_page,rule_based_webcam_page,add_data_page,add_hair
+from .views import webcam_page,photo_page,home,rule_based_photo_page,rule_based_webcam_page,add_data_page,add_hair,error_handle
 from .upload_image import webcam_face
 from .rule_based_photo import ruleBasedPredictPhoto
 from.rule_based_webcam import ruleBasedPredictWebcam
@@ -8,6 +8,9 @@ from .data_addition import add_data,add_hair_data
 urlpatterns = [
     #path for home page
     path('',home),
+
+    #path for error
+    path('error_handle',error_handle),
 
     #path for SVM photo and webcam prediction 
     path('predict_face_shape/', shapeprediction.predict_face_shape, name='predict_face_shape'),

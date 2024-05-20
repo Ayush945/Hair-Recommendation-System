@@ -31,4 +31,7 @@ def add_data_page(request):
 def add_hair(request):
     return render(request,'add_hairstyle.html')
 
+def error_handle(request):
+    return render(request,'error_handle.html')
+
 

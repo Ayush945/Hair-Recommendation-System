@@ -18,31 +18,37 @@ label=joblib.load('C:\\\\Users\\\\admin\\\\Downloads\\\\label_encoder_SVM.joblib
 
 def predict_face_shape(request):
     if request.method == 'POST':
-        image_file = request.FILES.get('image_file')
+        try:
         
-        
-        image_data = image_file.read()
-        nparr = np.frombuffer(image_data, np.uint8)
-        frame = cv2.imdecode(nparr, cv2.IMREAD_COLOR)
+            image_file = request.FILES.get('image_file')
+            image_data = image_file.read()
+            nparr = np.frombuffer(image_data, np.uint8)
+            frame = cv2.imdecode(nparr, cv2.IMREAD_COLOR)
 
-        preprocessed_image = preprocess_image(frame)
-        prediction = svm_model.predict(preprocessed_image)
-        
-        face_shape=label.inverse_transform(prediction)
-        
-        hairstyles = get_hairstyles_for_face_shape(face_shape[0])
-        for i in hairstyles:
-            print(i.image_path)
-            swapimage=swap_hair(frame,i.image_path)
-            ret, buffer = cv2.imencode('.jpg', swapimage)
-            image_as_string = base64.b64encode(buffer).decode('utf-8')
-        return render(request, 'predictedFace.html', {
-            'prediction': face_shape[0],
-            'hairstyles': hairstyles,
-            'image_data': image_as_string,
-        })
+            preprocessed_image = preprocess_image(frame)
+            prediction = svm_model.predict(preprocessed_image)
+            
+            face_shape=label.inverse_transform(prediction)
+            
+            hairstyles = get_hairstyles_for_face_shape(face_shape[0])
+            image_store = []
+            for hairstyle in hairstyles:
+                swapped_image = swap_hair(frame, hairstyle.image_path)
+                ret, buffer = cv2.imencode('.jpg', swapped_image)
+                image_as_string = base64.b64encode(buffer).decode('utf-8')
+                image_store.append(image_as_string)
+                
+            return render(request, 'predictedFace.html', {
+                'prediction': face_shape[0],
+                'hairstyles': hairstyles,
+                'image_data': image_store,
+            })
+        except:
+            return render(request, 'error_handle.html')
+
     else:
-        return render(request, 'predictedFace.html',{'prediction':'Unable To Classify'})
+        return render(request, 'predictedFace.html', {'prediction': 'Unable To Classify'})
+
 
 def preprocess_image(image):
    detector =MTCNN()

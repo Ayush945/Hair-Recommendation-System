@@ -15,20 +15,23 @@ predictor_path = r'E:\Class\Practice_Web_Application\Rule_Based\shape_predictor_
 
 def ruleBasedPredictPhoto(request):
     if request.method == 'POST':
-        # Get the uploaded image file
-        image_file = request.FILES.get('image_file')
-        
-        # Load the image file using OpenCV
-        image_data = image_file.read()
-        nparr = np.frombuffer(image_data, np.uint8)
-        frame = cv2.imdecode(nparr, cv2.IMREAD_COLOR)
-        print("Photo Based",frame)
-        # Preprocess the image  
-        preprocessedImage = preprocess_image(frame)
-        print(preprocessedImage)
+        try:
+            # Get the uploaded image file
+            image_file = request.FILES.get('image_file')
+            
+            # Load the image file using OpenCV
+            image_data = image_file.read()
+            nparr = np.frombuffer(image_data, np.uint8)
+            frame = cv2.imdecode(nparr, cv2.IMREAD_COLOR)
+            print("Photo Based",frame)
+            # Preprocess the image  
+            preprocessedImage = preprocess_image(frame)
+            print(preprocessedImage)
 
-        hairstyles = get_hairstyles_for_face_shape(preprocessedImage)
-        return render(request, 'predictedFace.html', {'prediction': preprocessedImage,'hairstyles': hairstyles})
+            hairstyles = get_hairstyles_for_face_shape(preprocessedImage)
+            return render(request, 'predictedFace.html', {'prediction': preprocessedImage,'hairstyles': hairstyles})
+        except:
+            return render(request,'error_handle.html')
     else:
         return render(request, 'predictedFace.html',{'prediction':'Unable To Classify'})
 

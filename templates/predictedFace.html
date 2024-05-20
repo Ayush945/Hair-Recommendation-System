@@ -145,23 +145,18 @@
             {% endif %}
         </div>
         {% if hairstyles %}
-        <h2>Hairstyle based on face shape:</h2>
+        <h2>All Hairstyles:</h2>
         <ul>
             {% for hairstyle in hairstyles %}
-            <li>{{ hairstyle.hairName }}</li>
+            <li>
+                **{{ hairstyle.hairName }}**<br> <img src="data:image/jpeg;base64,{{ image_data.pop }}">
+            </li>
             {% endfor %}
         </ul>
         {% else %}
-        <p>No hairstyles found for the predicted face shape.</p>
+        <p>No hairstyles found.</p>
         {% endif %}
-        <div style="margin-top: 5%;">
-            {% if image_data %}
-            <h2>Image:</h2>
-            <img src="data:image/jpeg;base64,{{ image_data }}" alt="Uploaded Image">
-            {% else %}
-            <p>No Image Found.</p>
-            {% endif %}
-        </div>
+
     </div>
 
 

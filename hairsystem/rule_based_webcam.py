@@ -14,19 +14,21 @@ face_cascade_path = r'E:\Class\Practice_Web_Application\Rule_Based\haarcascade_f
 predictor_path = r'E:\Class\Practice_Web_Application\Rule_Based\shape_predictor_68_face_landmarks.dat'
 def ruleBasedPredictWebcam(request):
     if request.method == 'POST':
-        # Get the uploaded image file
-        image_file = request.POST.get('captured_image')
-        if image_file:
-        
-            image_file=base64.b64decode(image_file.split(',')[1])
-            nparr = np.frombuffer(image_file, np.uint8)
-            frame = cv2.imdecode(nparr, cv2.IMREAD_COLOR)
-            print("Webcam Based",frame)
-            preprocessedImage = preprocess_image(frame)
-            print(preprocessedImage)
+        try:
+            image_file = request.POST.get('captured_image')
+            if image_file:
+            
+                image_file=base64.b64decode(image_file.split(',')[1])
+                nparr = np.frombuffer(image_file, np.uint8)
+                frame = cv2.imdecode(nparr, cv2.IMREAD_COLOR)
+                print("Webcam Based",frame)
+                preprocessedImage = preprocess_image(frame)
+                print(preprocessedImage)
 
-        hairstyles = get_hairstyles_for_face_shape(preprocessedImage)
-        return render(request, 'predictedFace.html', {'prediction': preprocessedImage,'hairstyles': hairstyles})
+            hairstyles = get_hairstyles_for_face_shape(preprocessedImage)
+            return render(request, 'predictedFace.html', {'prediction': preprocessedImage,'hairstyles': hairstyles})
+        except:
+            return render(request,"error_handle.html")
     else:
         return render(request, 'predictedFace.html',{'prediction':'Unable To Classify'})
 

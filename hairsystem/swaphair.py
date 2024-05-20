@@ -125,7 +125,6 @@ def refine_hair_mask(mask):
 
 
 def swap_hair(source_filename, target_filename):
-    
     source_img = source_filename
     target_img = load_image(target_filename)
     source_img,target_img=resize_and_swap_hair(source_img,target_img)
@@ -140,17 +139,54 @@ def swap_hair(source_filename, target_filename):
     if len(target_mask.shape) == 3:
         target_mask = rgb2gray(target_mask)
     
-    # Apply erosion to refine the masks
-    element = cv2.getStructuringElement(cv2.MORPH_ELLIPSE, (1, 1))
-    source_mask = cv2.erode(source_mask, element)
-    
     resized_source_mask = resize(source_mask, source_img.shape[:2], anti_aliasing=True)
-   
-    resized_source_mask = refine_hair_mask(resized_source_mask)
-     
+    resized_target_mask=resize(target_mask,target_img.shape[:2],anti_aliasing=True)
+    
+    resized_source_mask = refine_hair_mask(resized_source_mask) 
     poisson_blended_source = poisson_blending(target_img, source_img,resized_source_mask,with_gamma=True)
-  
+    poisson_blended_source=cv2.medianBlur(poisson_blended_source,3)
     poisson_blended_source=cv2.resize(poisson_blended_source,(224,224))
     
-    
     return poisson_blended_source
+
+# def swap_hair(source_filename, target_filename):
+#     # Load source and target images
+#     source_image =source_filename
+#     target_image = load_image(target_filename)
+    
+#     # Ensure the images have 3 color channels
+#     if source_image.ndim == 2:
+#         source_image = cv2.cvtColor(source_image, cv2.COLOR_GRAY2BGR)
+#     if target_image.ndim == 2:
+#         target_image = cv2.cvtColor(target_image, cv2.COLOR_GRAY2BGR)
+    
+#     # Get original shapes
+#     original_shape_source = source_image.shape[:2]
+#     original_shape_target = target_image.shape[:2]
+    
+#     # Get hair masks
+#     source_mask = get_prediction(source_filename, original_shape_source)
+#     target_mask = get_prediction(target_filename, original_shape_target)
+    
+#     # Threshold masks to binary and convert to uint8
+#     source_mask = (source_mask > 0.5).astype(np.uint8) * 255
+#     target_mask = (target_mask > 0.5).astype(np.uint8) * 255
+    
+#     # Resize images to the same size for swapping
+#     source_image_resized, target_image_resized = resize_and_swap_hair(source_image, target_image)
+#     source_hair_resized = cv2.resize(source_mask, (target_image_resized.shape[1], target_image_resized.shape[0]), interpolation=cv2.INTER_NEAREST)
+#     target_hair_resized = cv2.resize(target_mask, (source_image_resized.shape[1], source_image_resized.shape[0]), interpolation=cv2.INTER_NEAREST)
+    
+#     # Combine the hair with the target images
+#     target_without_hair = cv2.bitwise_and(target_image_resized, target_image_resized, mask=~source_hair_resized)
+#     source_without_hair = cv2.bitwise_and(source_image_resized, source_image_resized, mask=~target_hair_resized)
+    
+#     # Create final swapped images
+#     final_target_with_source_hair = cv2.add(target_without_hair, cv2.bitwise_and(source_image_resized, source_image_resized, mask=source_hair_resized))
+#     final_source_with_target_hair = cv2.add(source_without_hair, cv2.bitwise_and(target_image_resized, target_image_resized, mask=target_hair_resized))
+    
+
+#     #Resize
+#     final_target_with_source_hair=cv2.resize(final_target_with_source_hair,(224,224))
+#     final_source_with_target_hair=cv2.resize(final_source_with_target_hair,(224,224))
+#     return final_source_with_target_hair

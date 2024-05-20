@@ -6,12 +6,11 @@ from mtcnn.mtcnn import MTCNN
 from pathlib import Path
 from keras_facenet import FaceNet
 from django.shortcuts import render
-import tkinter as tk
-from PIL import Image,ImageTk
 import os
-from django.http import JsonResponse,HttpResponse
 import base64
 from django.views.decorators.csrf import csrf_exempt
+from .swaphair import swap_hair
+
 
 os.environ['TF_CPP_MIN_LOG_LEVEL']='2'
 svm_model = joblib.load('C:\\\\Users\\\\admin\\\\Downloads\\\\FaceNetTrainedSVM.joblib')
@@ -19,26 +18,38 @@ label=joblib.load('C:\\\\Users\\\\admin\\\\Downloads\\\\label_encoder_SVM.joblib
 
 def webcam_face(request):
     if request.method == 'POST':
-        # Get the uploaded image file
-        image_file = request.POST.get('captured_image')
-        if image_file:
-            image_file=base64.b64decode(image_file.split(',')[1])
-            nparr = np.frombuffer(image_file, np.uint8)
-            frame = cv2.imdecode(nparr, cv2.IMREAD_COLOR)
+        try:
+            image_file = request.POST.get('captured_image')
+            if image_file:
+                image_file=base64.b64decode(image_file.split(',')[1])
+                nparr = np.frombuffer(image_file, np.uint8)
+                frame = cv2.imdecode(nparr, cv2.IMREAD_COLOR)
 
 
-            preprocessed_image = preprocess_image(frame)
+                preprocessed_image = preprocess_image(frame)
 
 
-            prediction = svm_model.predict(preprocessed_image)
+                prediction = svm_model.predict(preprocessed_image)
 
-            face_shape=label.inverse_transform(prediction)
+                face_shape=label.inverse_transform(prediction)
 
-            hairstyles = get_hairstyles_for_face_shape(face_shape[0])
-
-            return render(request, 'predictedFace.html', {'prediction': face_shape[0],'hairstyles': hairstyles})
-        else:
-            return render(request, 'predictedFace.html', {'prediction': 'No image data received'})
+                hairstyles = get_hairstyles_for_face_shape(face_shape[0])
+                image_store = []
+                for hairstyle in hairstyles:
+                    swapped_image = swap_hair(frame, hairstyle.image_path)
+                    ret, buffer = cv2.imencode('.jpg', swapped_image)
+                    image_as_string = base64.b64encode(buffer).decode('utf-8')
+                    image_store.append(image_as_string)
+                    
+                return render(request, 'predictedFace.html', {
+                    'prediction': face_shape[0],
+                    'hairstyles': hairstyles,
+                    'image_data': image_store,
+                })
+            else:
+                return render(request, 'predictedFace.html', {'prediction': 'No image data received'})
+        except:
+            return render(request, 'error_handle.html')
     else:
         return render(request, 'predictedFace.html', {'prediction': 'Unable To Classify'})
 
