@@ -17,7 +17,6 @@
             line-height: 1.6;
         }
 
-
         .navbar {
             background-color: greenyellow;
             padding: 20px 20px;
@@ -79,7 +78,20 @@
         }
 
         .main-content li {
+            margin-bottom: 20px;
+        }
+
+        .hairstyle-name {
+            font-weight: bold;
+            font-size: 1.2em;
             margin-bottom: 5px;
+            display: block;
+        }
+
+        .hairstyle-image {
+            border: 2px solid #ccc;
+            padding: 5px;
+            max-width: 100%;
         }
 
         .feedback-container {
@@ -141,22 +153,23 @@
             <h2>Face shape prediction: {{ prediction }}</h2>
             {% endif %}
         </div>
+        <br>
+        <br>
         {% if hairstyles %}
-        <h2>All Hairstyles:</h2>
+        <h2>All Hairstyles:</h2><br>
         <ul>
             {% for hairstyle in hairstyles %}
             <li>
-                **{{ hairstyle.hairName }}**<br> <img src="data:image/jpeg;base64,{{ image_data.pop }}">
+                <br>
+                <span class="hairstyle-name">{{ hairstyle.hairName }}</span>
+                <img class="hairstyle-image" src="data:image/jpeg;base64,{{ image_data.pop }}">
             </li>
             {% endfor %}
         </ul>
         {% else %}
         <p>No hairstyles found.</p>
         {% endif %}
-
     </div>
-
-
 
     <div class="feedback-container" style="margin-top: 5%;">
         <label for="feedback">Enter your feedback here:</label><br>
@@ -164,14 +177,12 @@
         <button type="button" onclick="sendFeedback()" class="feedback-button">Send Feedback</button>
     </div>
 
-    </div>
     <script>
         function sendFeedback() {
             const feedbackText = document.getElementById("feedback").value;
             alert("Thank you for your feedback!");
         }
     </script>
-
 </body>
 
 </html>
