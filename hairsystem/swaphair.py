@@ -2,7 +2,7 @@ from keras.models import load_model
 import numpy as np 
 import matplotlib.pyplot as plt
 import cv2
-from skimage import io 
+from skimage import io,transform
 from skimage.color import rgb2gray
 from skimage.transform import resize
 from keras.losses import mean_squared_error
@@ -11,45 +11,6 @@ from scipy.sparse.linalg import spsolve
 
 #pretrained U-Net model for hair segmentation
 model = load_model(r'E:\Class\Practice_Web_Application\Rule_Based\model.h5', custom_objects={'mse': mean_squared_error})
-
-#Load image from path
-def load_image(path,as_gray = False):
-    return io.imread(path,plugin='matplotlib',as_gray=as_gray)
-
-def get_gray_scale(image):
-    return rgb2gray(image)
-
-def set_scale(image,shape):
-    return resize(image,shape)
-
-def get_image_for_network(path):
-    img = load_image(path,True)
-    img = set_scale(img,(224,224))
-    img = img.reshape((224,224,1))
-    img = img
-    return img 
-
-
-def get_prediction(path,original_shape):
-    print(original_shape)
-    try:
-        img = get_image_for_network(path)
-    except:
-        img=rgb2gray(path)
-        img = set_scale(img,(224,224))
-        img = img.reshape((224,224,1))
-        img=img
-    res = model.predict(np.asarray([img]))[0]
-    return resize(res.reshape((224,224)),original_shape)
-
-#Resize the image for hair swap
-def resize_and_swap_hair(source_image, target_image):
-  print("resize")
-  max_height, max_width = max(source_image.shape[:2]), max(target_image.shape[:2])
-  source_image = cv2.resize(source_image, (max_width, max_height))
-  target_image = cv2.resize(target_image, (max_width, max_height))
-
-  return source_image,target_image
 
 def laplacian_matrix(n, m):
     mat_D = scipy.sparse.lil_matrix((m, m))
@@ -125,68 +86,59 @@ def refine_hair_mask(mask):
 
 
 def swap_hair(source_filename, target_filename):
-    source_img = source_filename
-    target_img = load_image(target_filename)
-    source_img,target_img=resize_and_swap_hair(source_img,target_img)
+    print('here')
+    original_image=source_filename
 
-    # Get hair segmentation masks
-    source_mask = get_prediction(source_filename, source_img.shape[:2])
-    target_mask = get_prediction(target_filename, target_img.shape[:2])
+    new_image=source_filename
+    new_image = cv2.cvtColor(new_image, cv2.COLOR_BGR2GRAY)
+    new_image = transform.resize(new_image, (224, 224))
+    new_image = np.expand_dims(new_image, axis=-1)
+    new_image = np.expand_dims(new_image, axis=0)
+    
+    predicted_mask = model.predict(new_image)   
+    _, predicted_mask_binary = cv2.threshold(predicted_mask.squeeze(), 0.5, 1, cv2.THRESH_BINARY)
+    predicted_mask_resized = transform.resize(predicted_mask_binary, (original_image.shape[0], original_image.shape[1]), order=0, preserve_range=True)
+    masked_image = original_image.copy()
+    if len(masked_image.shape) == 3:
+        for c in range(3):
+            masked_image[:, :, c] = masked_image[:, :, c] * (1 - predicted_mask_resized)
+    else:
+        masked_image = masked_image * (1 - predicted_mask_resized)
+    
+    imagepath2 = target_filename
+    second_image = io.imread(imagepath2)
 
-    # Ensure masks are single-channel
-    if len(source_mask.shape) == 3:
-        source_mask = rgb2gray(source_mask)
-    if len(target_mask.shape) == 3:
-        target_mask = rgb2gray(target_mask)
-    
-    resized_source_mask = resize(source_mask, source_img.shape[:2], anti_aliasing=True)
-    resized_target_mask=resize(target_mask,target_img.shape[:2],anti_aliasing=True)
-    
-    resized_source_mask = refine_hair_mask(resized_source_mask) 
-    poisson_blended_source = poisson_blending(target_img, source_img,resized_source_mask,with_gamma=True)
-    poisson_blended_source=cv2.medianBlur(poisson_blended_source,3)
-    poisson_blended_source=cv2.resize(poisson_blended_source,(224,224))
-    
-    return poisson_blended_source
+    second_image_gray = io.imread(imagepath2, as_gray=True)
+    second_image_resized = transform.resize(second_image_gray, (224, 224))
+    second_image_resized = np.expand_dims(second_image_resized, axis=-1)
+    second_image_resized = np.expand_dims(second_image_resized, axis=0)
 
-# def swap_hair(source_filename, target_filename):
-#     # Load source and target images
-#     source_image =source_filename
-#     target_image = load_image(target_filename)
-    
-#     # Ensure the images have 3 color channels
-#     if source_image.ndim == 2:
-#         source_image = cv2.cvtColor(source_image, cv2.COLOR_GRAY2BGR)
-#     if target_image.ndim == 2:
-#         target_image = cv2.cvtColor(target_image, cv2.COLOR_GRAY2BGR)
-    
-#     # Get original shapes
-#     original_shape_source = source_image.shape[:2]
-#     original_shape_target = target_image.shape[:2]
-    
-#     # Get hair masks
-#     source_mask = get_prediction(source_filename, original_shape_source)
-#     target_mask = get_prediction(target_filename, original_shape_target)
-    
-#     # Threshold masks to binary and convert to uint8
-#     source_mask = (source_mask > 0.5).astype(np.uint8) * 255
-#     target_mask = (target_mask > 0.5).astype(np.uint8) * 255
-    
-#     # Resize images to the same size for swapping
-#     source_image_resized, target_image_resized = resize_and_swap_hair(source_image, target_image)
-#     source_hair_resized = cv2.resize(source_mask, (target_image_resized.shape[1], target_image_resized.shape[0]), interpolation=cv2.INTER_NEAREST)
-#     target_hair_resized = cv2.resize(target_mask, (source_image_resized.shape[1], source_image_resized.shape[0]), interpolation=cv2.INTER_NEAREST)
-    
-#     # Combine the hair with the target images
-#     target_without_hair = cv2.bitwise_and(target_image_resized, target_image_resized, mask=~source_hair_resized)
-#     source_without_hair = cv2.bitwise_and(source_image_resized, source_image_resized, mask=~target_hair_resized)
-    
-#     # Create final swapped images
-#     final_target_with_source_hair = cv2.add(target_without_hair, cv2.bitwise_and(source_image_resized, source_image_resized, mask=source_hair_resized))
-#     final_source_with_target_hair = cv2.add(source_without_hair, cv2.bitwise_and(target_image_resized, target_image_resized, mask=target_hair_resized))
-    
+    predicted_mask2 = model.predict(second_image_resized)
+    _, predicted_mask2_binary = cv2.threshold(predicted_mask2.squeeze(), 0.5, 1, cv2.THRESH_BINARY)
 
-#     #Resize
-#     final_target_with_source_hair=cv2.resize(final_target_with_source_hair,(224,224))
-#     final_source_with_target_hair=cv2.resize(final_source_with_target_hair,(224,224))
-#     return final_source_with_target_hair
+    predicted_mask2_binary = cv2.GaussianBlur(predicted_mask2_binary, (5, 5), 0)
+    print("here 4")
+    # Resize the predicted mask of the second image back to original second image size
+    predicted_mask2_resized = transform.resize(predicted_mask2_binary, (second_image.shape[0], second_image.shape[1]), order=0, preserve_range=True)
+
+    # Extract the hair region from the second image
+    hair_region = second_image.copy()
+    if len(hair_region.shape) == 3:
+        for c in range(3):
+            hair_region[:, :, c] = hair_region[:, :, c] * predicted_mask2_resized
+    else:
+        hair_region = hair_region * predicted_mask2_resized
+
+    hair_region_resized = transform.resize(hair_region, (original_image.shape[0], original_image.shape[1]), order=0, preserve_range=True, anti_aliasing=True)
+    mask = predicted_mask2_resized.copy()
+    mask[mask > 0] = 1
+    print("here 5")
+    # Resize the hair region to match the first image size
+    hair_region_resized = transform.resize(hair_region, (original_image.shape[0], original_image.shape[1]), order=0, preserve_range=True, anti_aliasing=True)
+    center = (original_image.shape[1] // 2, original_image.shape[0] // 2)
+    mask=transform.resize(mask, (original_image.shape[0], original_image.shape[1]), order=0, preserve_range=True, anti_aliasing=True)
+    
+    blended_image = poisson_blending(hair_region_resized, masked_image, mask, with_gamma=True)
+    blended_image=cv2.cvtColor(blended_image,cv2.COLOR_BGR2GRAY)
+    print("Completed this process")
+    return blended_image

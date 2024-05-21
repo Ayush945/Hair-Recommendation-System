@@ -8,10 +8,10 @@ from django.shortcuts import render
 
 
 #haarcascade for detecting faces
-face_cascade_path = r'E:\Class\Practice_Web_Application\Rule_Based\haarcascade_frontalface_default.xml'
+face_cascade_path = r'E:\Class\Course Material\L6\Sem 2\Models\haarcascade_frontalface_default.xml'
 
 #File for detecting facial landmarks
-predictor_path = r'E:\Class\Practice_Web_Application\Rule_Based\shape_predictor_68_face_landmarks.dat'
+predictor_path = r'E:\Class\Course Material\L6\Sem 2\Models\shape_predictor_68_face_landmarks.dat'
 
 def ruleBasedPredictPhoto(request):
     if request.method == 'POST':
@@ -23,12 +23,10 @@ def ruleBasedPredictPhoto(request):
             image_data = image_file.read()
             nparr = np.frombuffer(image_data, np.uint8)
             frame = cv2.imdecode(nparr, cv2.IMREAD_COLOR)
-            print("Photo Based",frame)
-            # Preprocess the image  
             preprocessedImage = preprocess_image(frame)
             print(preprocessedImage)
-
             hairstyles = get_hairstyles_for_face_shape(preprocessedImage)
+            print(hairstyles)
             return render(request, 'predictedFace.html', {'prediction': preprocessedImage,'hairstyles': hairstyles})
         except:
             return render(request,'error_handle.html')
@@ -36,6 +34,7 @@ def ruleBasedPredictPhoto(request):
         return render(request, 'predictedFace.html',{'prediction':'Unable To Classify'})
 
 def preprocess_image(frame):
+    print("Here1")
     faceCascade = cv2.CascadeClassifier(face_cascade_path)
     predictor = dlib.shape_predictor(predictor_path)
     image=frame
@@ -49,6 +48,7 @@ def preprocess_image(frame):
     minSize=(100,100),
     flags=cv2.CASCADE_SCALE_IMAGE
     )
+    print("Here 2")
     for (x,y,w,h) in faces:
         cv2.rectangle(image, (x,y), (x+w,y+h), (0,255,0), 2)
         rect_dlib=dlib.rectangle(int(x),int(y),int(x+w),int(y+h))
@@ -126,8 +126,10 @@ def classify_face_shape(landmarks,right,left,y,x):
 
 def get_hairstyles_for_face_shape(face_shape_name):
     try:
+        print("Hi there")
         face_shape = FaceShape.objects.get(faceShape=face_shape_name)
         hairstyles = Hairstyle.objects.filter(face_shape=face_shape)
+        print("Hello there")
         return hairstyles
     except FaceShape.DoesNotExist:
         return None

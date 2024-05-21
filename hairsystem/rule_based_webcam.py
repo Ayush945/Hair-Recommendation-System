@@ -8,27 +8,28 @@ from django.shortcuts import render
 import base64
 
 #haarcascade for detecting faces
-face_cascade_path = r'E:\Class\Practice_Web_Application\Rule_Based\haarcascade_frontalface_default.xml'
+face_cascade_path = r'E:\Class\Course Material\L6\Sem 2\Models\haarcascade_frontalface_default.xml'
 
 #File for detecting facial landmarks
-predictor_path = r'E:\Class\Practice_Web_Application\Rule_Based\shape_predictor_68_face_landmarks.dat'
+predictor_path = r'E:\Class\Course Material\L6\Sem 2\Models\shape_predictor_68_face_landmarks.dat'
+
+
 def ruleBasedPredictWebcam(request):
     if request.method == 'POST':
-        try:
+        #try:
             image_file = request.POST.get('captured_image')
             if image_file:
             
                 image_file=base64.b64decode(image_file.split(',')[1])
                 nparr = np.frombuffer(image_file, np.uint8)
                 frame = cv2.imdecode(nparr, cv2.IMREAD_COLOR)
-                print("Webcam Based",frame)
+                print("Webcam Based")
                 preprocessedImage = preprocess_image(frame)
-                print(preprocessedImage)
-
-            hairstyles = get_hairstyles_for_face_shape(preprocessedImage)
+                print("Processed Images")
+                hairstyles = get_hairstyles_for_face_shape(preprocessedImage)
             return render(request, 'predictedFace.html', {'prediction': preprocessedImage,'hairstyles': hairstyles})
-        except:
-            return render(request,"error_handle.html")
+        # except:
+        #     return render(request,"error_handle.html")
     else:
         return render(request, 'predictedFace.html',{'prediction':'Unable To Classify'})
 
@@ -56,6 +57,7 @@ def preprocess_image(frame):
         #forehead from image to seperate forehead and hair
         forehead = temp[y:y+int(0.25*h), x:x+w]
         rows,cols, bands = forehead.shape
+        print(rows,cols)
         X = forehead.reshape(rows*cols,bands)
         
         #kmeans 
