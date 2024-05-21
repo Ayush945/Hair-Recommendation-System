@@ -34,7 +34,6 @@ def ruleBasedPredictPhoto(request):
         return render(request, 'predictedFace.html',{'prediction':'Unable To Classify'})
 
 def preprocess_image(frame):
-    print("Here1")
     faceCascade = cv2.CascadeClassifier(face_cascade_path)
     predictor = dlib.shape_predictor(predictor_path)
     image=frame
@@ -48,7 +47,6 @@ def preprocess_image(frame):
     minSize=(100,100),
     flags=cv2.CASCADE_SCALE_IMAGE
     )
-    print("Here 2")
     for (x,y,w,h) in faces:
         cv2.rectangle(image, (x,y), (x+w,y+h), (0,255,0), 2)
         rect_dlib=dlib.rectangle(int(x),int(y),int(x+w),int(y+h))

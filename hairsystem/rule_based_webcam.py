@@ -54,7 +54,6 @@ def preprocess_image(frame):
         landmarks=np.matrix([[i.x,i.y] for i in detected_landmarks])
         temp=image.copy()
 
-        #forehead from image to seperate forehead and hair
         forehead = temp[y:y+int(0.25*h), x:x+w]
         rows,cols, bands = forehead.shape
         print(rows,cols)
@@ -70,7 +69,7 @@ def preprocess_image(frame):
                     if y_kmeans[i*cols+j]==False:
                         forehead[i][j]=[0,0,0] #black
    
-    #Midpoint of forehead and find right and left boundaries of the forehead based on pixel value.
+        #Midpoint of forehead and find right and left boundaries of the forehead based on pixel value.
     forehead_mid=[int(cols/2),int(rows/2)]
     lef=0
 
