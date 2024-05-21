@@ -6,6 +6,7 @@ from math import degrees
 from .models import FaceShape, Hairstyle
 from django.shortcuts import render
 import base64
+from .swaphair import swap_hair
 
 #haarcascade for detecting faces
 face_cascade_path = r'E:\Class\Course Material\L6\Sem 2\Models\haarcascade_frontalface_default.xml'
@@ -16,20 +17,29 @@ predictor_path = r'E:\Class\Course Material\L6\Sem 2\Models\shape_predictor_68_f
 
 def ruleBasedPredictWebcam(request):
     if request.method == 'POST':
-        #try:
+        try:
             image_file = request.POST.get('captured_image')
             if image_file:
             
                 image_file=base64.b64decode(image_file.split(',')[1])
                 nparr = np.frombuffer(image_file, np.uint8)
                 frame = cv2.imdecode(nparr, cv2.IMREAD_COLOR)
-                print("Webcam Based")
                 preprocessedImage = preprocess_image(frame)
-                print("Processed Images")
                 hairstyles = get_hairstyles_for_face_shape(preprocessedImage)
-            return render(request, 'predictedFace.html', {'prediction': preprocessedImage,'hairstyles': hairstyles})
-        # except:
-        #     return render(request,"error_handle.html")
+                image_store = []
+                for hairstyle in hairstyles:
+                    swapped_image = swap_hair(frame, hairstyle.image_path)
+                    ret, buffer = cv2.imencode('.jpg', swapped_image)
+                    image_as_string = base64.b64encode(buffer).decode('utf-8')
+                    image_store.append(image_as_string)
+                    
+                return render(request, 'predictedFace.html', {
+                    'prediction': preprocessedImage,
+                    'hairstyles': hairstyles,
+                    'image_data': image_store,
+                })
+        except:
+            return render(request,"error_handle.html")
     else:
         return render(request, 'predictedFace.html',{'prediction':'Unable To Classify'})
 

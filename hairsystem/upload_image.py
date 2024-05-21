@@ -9,8 +9,8 @@ from django.shortcuts import render
 import os
 import base64
 from django.views.decorators.csrf import csrf_exempt
-from .swaphair import swap_hair
-
+#from .swaphair import swap_hair
+from .anotherswaphair import swap_hair
 
 os.environ['TF_CPP_MIN_LOG_LEVEL']='2'
 svm_model = joblib.load('C:\\\\Users\\\\admin\\\\Downloads\\\\FaceNetTrainedSVM.joblib')

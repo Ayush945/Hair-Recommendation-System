@@ -5,7 +5,8 @@ from sklearn.cluster import KMeans
 from math import degrees
 from .models import FaceShape, Hairstyle
 from django.shortcuts import render
-
+import base64
+from .anotherswaphair import swap_hair
 
 #haarcascade for detecting faces
 face_cascade_path = r'E:\Class\Course Material\L6\Sem 2\Models\haarcascade_frontalface_default.xml'
@@ -26,8 +27,18 @@ def ruleBasedPredictPhoto(request):
             preprocessedImage = preprocess_image(frame)
             print(preprocessedImage)
             hairstyles = get_hairstyles_for_face_shape(preprocessedImage)
-            print(hairstyles)
-            return render(request, 'predictedFace.html', {'prediction': preprocessedImage,'hairstyles': hairstyles})
+            image_store = []
+            for hairstyle in hairstyles:
+                swapped_image = swap_hair(frame, hairstyle.image_path)
+                ret, buffer = cv2.imencode('.jpg', swapped_image)
+                image_as_string = base64.b64encode(buffer).decode('utf-8')
+                image_store.append(image_as_string)
+                
+            return render(request, 'predictedFace.html', {
+                'prediction': preprocessedImage,
+                'hairstyles': hairstyles,
+                'image_data': image_store,
+            })
         except:
             return render(request,'error_handle.html')
     else:

@@ -87,7 +87,20 @@
             <li>There was an issue with the face detection or prediction model.</li>
         </ul>
         <p>If you continue to experience errors, please contact the website administrator for further assistance.</p>
+        <br>
+        <div class="feedback-container" style="margin-top: 5%;">
+            <label for="feedback">Enter your feedback here:</label><br>
+            <textarea id="feedback" maxlength="100" class="feedback-area"></textarea><br>
+            <button type="button" onclick="sendFeedback()" class="feedback-button">Send Feedback</button>
+        </div>
+
     </div>
+    <script>
+        function sendFeedback() {
+            const feedbackText = document.getElementById("feedback").value;
+            alert("Thank you for your feedback!");
+        }
+    </script>
 
 </body>
 

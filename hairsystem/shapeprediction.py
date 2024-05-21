@@ -8,12 +8,12 @@ from django.shortcuts import render
 import os
 import base64
 from django.views.decorators.csrf import csrf_exempt
+#from .swaphair import swap_hair
 from .swaphair import swap_hair
-
 #Load the model and label
 os.environ['TF_CPP_MIN_LOG_LEVEL']='2'
-svm_model = joblib.load('C:\\\\Users\\\\admin\\\\Downloads\\\\FaceNetTrainedSVM.joblib')
-label=joblib.load('C:\\\\Users\\\\admin\\\\Downloads\\\\label_encoder_SVM.joblib')
+svm_model = joblib.load(r'E:\Class\Course Material\L6\Sem 2\Models\FaceNetTrainedSVM.joblib')
+label=joblib.load(r'E:\Class\Course Material\L6\Sem 2\Models\label_encoder_SVM.joblib')
 
 
 def predict_face_shape(request):
