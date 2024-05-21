@@ -1,5 +1,6 @@
 import numpy as np
-import cv2 
+import cv2
+import traceback 
 import dlib 
 from sklearn.cluster import KMeans
 from math import degrees
@@ -40,7 +41,7 @@ def ruleBasedPredictPhoto(request):
                 'image_data': image_store,
             })
         except:
-            return render(request,'error_handle.html')
+            return render(request, 'error_handle.html')
     else:
         return render(request, 'predictedFace.html',{'prediction':'Unable To Classify'})
 

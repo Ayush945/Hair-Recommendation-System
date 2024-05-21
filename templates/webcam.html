@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Face Shape Prediction</title>
+    <title>Magic Mirror</title>
     <style>
         * {
             margin: 0;
@@ -20,8 +20,8 @@
 
 
         .navbar {
-            background-color: #f0f0f0;
-            padding: 10px 20px;
+            background-color: greenyellow;
+            padding: 20px 20px;
             display: flex;
             justify-content: space-between;
             align-items: center;
@@ -113,11 +113,13 @@
     </div>
     <div style="text-align: center; padding-top: 20px;">
         <div>
-            <h1>Magic Mirror: Reflect Your Hairstyle</h1>
             <h3>SVM Model</h3>
             <h3>Face Shape Prediction</h3>
         </div>
+        <br>
+        <br>
         <div id="webcam-container">
+            <h3>Click on Capture Image button to take a picture!</h3>
             <video id="webcam" width="320" height="240" autoplay muted></video>
             <button id="openWebcamBtn" disabled>Open Webcam</button>
             <button id="captureImageBtn" disabled>Capture Image</button>

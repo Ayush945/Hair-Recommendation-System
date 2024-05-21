@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Face Shape Prediction</title>
+    <title>Magic Mirror</title>
     <style>
         * {
             margin: 0;
@@ -20,8 +20,8 @@
 
 
         .navbar {
-            background-color: #f0f0f0;
-            padding: 10px 20px;
+            background-color: greenyellow;
+            padding: 20px 20px;
             display: flex;
             justify-content: space-between;
             align-items: center;
@@ -75,6 +75,7 @@
     </div>
     <div style="text-align: center;">
         <br><br>
+        <pre>{{ error_message }}</pre>
         <h1>Uh oh! Something went wrong.</h1>
         <p>We encountered an error while processing your image for face shape prediction. Please try again later.</p>
         <br><br>
