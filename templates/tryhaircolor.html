@@ -21,7 +21,6 @@
             min-height: 100vh;
         }
 
-
         .navbar {
             background-color: greenyellow;
             padding: 20px 20px;
@@ -39,6 +38,43 @@
 
         .navbar a.active {
             font-weight: bold;
+        }
+
+
+
+        #webcam {
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+
+        .webcam-container {
+            text-align: center;
+            padding-top: 20px;
+        }
+
+        .webcam-container h3 {
+            margin-bottom: 10px;
+        }
+
+        .control-panel {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-top: 20px;
+        }
+
+        .control-panel button,
+        #colorPicker {
+            margin: 0 10px;
+            padding: 10px 20px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+
+        #colorPicker {
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            height: 44px;
         }
 
         .dropdown-content {
@@ -61,15 +97,13 @@
             display: block;
         }
 
-
         .main-content {
             max-width: 800px;
-            margin: 0 auto;
+            margin: 20px auto;
             padding: 20px;
             background-color: #fff;
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
             text-align: justify;
-            min-height: 100vh;
         }
 
         .main-content h1,
@@ -92,6 +126,7 @@
             color: #fff;
             text-align: center;
             padding: 20px;
+            margin-top: auto;
         }
     </style>
 </head>
@@ -117,24 +152,24 @@
     </div>
     <div style="text-align: center; padding-top: 20px;">
         <div>
-            <h3>Rule Based</h3>
+            <h3>SVM Model</h3>
             <h3>Face Shape Prediction</h3>
         </div>
-        <br><br>
+        <br>
+        <br>
         <div id="webcam-container">
             <h3>Click on Capture Image button to take a picture!</h3>
-            <video id="webcam" width="320" height="240" autoplay muted></video>
+            <video id="webcam" width="320" height="240" autoplay muted></video><br>
             <button id="openWebcamBtn" disabled>Open Webcam</button>
             <button id="captureImageBtn" disabled>Capture Image</button>
             <canvas id="capturedImageCanvas" style="display: none;"></canvas>
-            <form id="captureImageForm" method="POST" enctype="multipart/form-data"
-                action="{% url 'rule_based_predict_webcam' %}" style="display: none;">
+            <form id="captureImageForm" method="POST" enctype="multipart/form-data" action="{% url 'hair_color' %}">
                 {% csrf_token %}
                 <input type="hidden" id="capturedImageData" name="captured_image">
+                <input type="color" id="colorPicker" name="selected_color" value="#ff0000">
             </form>
         </div>
     </div>
-
     <script>
         const webcam = document.getElementById('webcam');
         const openWebcamBtn = document.getElementById('openWebcamBtn');
@@ -165,9 +200,6 @@
             captureImageForm.submit();
         });
     </script>
-
-    </div>
-
 </body>
 
 </html>

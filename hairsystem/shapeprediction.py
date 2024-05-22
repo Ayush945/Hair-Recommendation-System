@@ -10,12 +10,13 @@ import base64
 from django.views.decorators.csrf import csrf_exempt
 #from .swaphair import swap_hair
 from .anotherswaphair import swap_hair
+
 #Load the model and label
 os.environ['TF_CPP_MIN_LOG_LEVEL']='2'
 svm_model = joblib.load(r'E:\Class\Course Material\L6\Sem 2\Models\FaceNetTrainedSVM.joblib')
 label=joblib.load(r'E:\Class\Course Material\L6\Sem 2\Models\label_encoder_SVM.joblib')
 
-
+#Function to process the input image and return the results
 def predict_face_shape(request):
     if request.method == 'POST':
         try:
@@ -49,7 +50,7 @@ def predict_face_shape(request):
     else:
         return render(request, 'predictedFace.html', {'prediction': 'Unable To Classify'})
 
-
+#function to preprocess the image
 def preprocess_image(image):
    detector =MTCNN()
    t_im=cv2.cvtColor(image,cv2.COLOR_BGR2RGB)
@@ -61,7 +62,7 @@ def preprocess_image(image):
    return test_im
 
 
-
+#function to processes a facial image to generate a 512-dimensional embedding (feature vector)
 def get_embedding(face_img):
     embedder=FaceNet()
     face_img=face_img.astype('float32')
@@ -69,6 +70,7 @@ def get_embedding(face_img):
     yhat=embedder.embeddings(face_img)
     return yhat[0]
 
+#Function to return harstyle based on face shape
 def get_hairstyles_for_face_shape(face_shape_name):
     try:
         face_shape = FaceShape.objects.get(faceShape=face_shape_name)

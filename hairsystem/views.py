@@ -9,7 +9,7 @@ from itertools import chain
 logger = logging.getLogger(__name__)
 
 
-
+#HTML Pages
 def webcam_page(request):
     return render(request,'webcam.html')
 
@@ -33,5 +33,8 @@ def add_hair(request):
 
 def error_handle(request):
     return render(request,'error_handle.html')
+
+def tryhaircolor(request):
+    return render(request,'tryhaircolor.html')
 
 

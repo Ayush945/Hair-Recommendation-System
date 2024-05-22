@@ -12,6 +12,7 @@ from scipy.sparse.linalg import spsolve
 #pretrained U-Net model for hair segmentation
 model = load_model(r'E:\Class\Course Material\L6\Sem 2\Models\model.h5', custom_objects={'mse': mean_squared_error})
 
+#function for Laplacian matrix
 def laplacian_matrix(n, m):
     mat_D = scipy.sparse.lil_matrix((m, m))
     mat_D.setdiag(-1, -1)
@@ -25,6 +26,7 @@ def laplacian_matrix(n, m):
 
     return mat_A
 
+#function for poisson blending 
 def poisson_blending(source, target, mask, with_gamma=True):
     if with_gamma:
         gamma_value = 2.2
@@ -84,7 +86,7 @@ def refine_hair_mask(mask):
   return refined_mask
 
 
-
+#function to swap hair
 def swap_hair(source_filename, target_filename):
     print('here')
     original_image=source_filename

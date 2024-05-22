@@ -15,6 +15,7 @@ face_cascade_path = r'E:\Class\Course Material\L6\Sem 2\Models\haarcascade_front
 #File for detecting facial landmarks
 predictor_path = r'E:\Class\Course Material\L6\Sem 2\Models\shape_predictor_68_face_landmarks.dat'
 
+#Function to process the input image and return the results
 def ruleBasedPredictPhoto(request):
     if request.method == 'POST':
         try:
@@ -45,6 +46,7 @@ def ruleBasedPredictPhoto(request):
     else:
         return render(request, 'predictedFace.html',{'prediction':'Unable To Classify'})
 
+#Preprocess the image 
 def preprocess_image(frame):
     faceCascade = cv2.CascadeClassifier(face_cascade_path)
     predictor = dlib.shape_predictor(predictor_path)
@@ -101,7 +103,7 @@ def preprocess_image(frame):
     face_shape=classify_face_shape(landmarks,right,left,y,x)
     return face_shape
 
-
+#Classify face shape based on rules
 def classify_face_shape(landmarks,right,left,y,x):
     line1 = np.subtract(right + y, left + x)[0]
     linepointleft = (landmarks[1, 0], landmarks[1, 1])
@@ -133,7 +135,7 @@ def classify_face_shape(landmarks,right,left,y,x):
     else:
         return "Heart"
 
-
+#Get hairstyle based on face shape from database
 def get_hairstyles_for_face_shape(face_shape_name):
     try:
         print("Hi there")

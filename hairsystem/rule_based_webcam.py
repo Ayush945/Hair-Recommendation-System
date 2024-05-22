@@ -25,18 +25,18 @@ def ruleBasedPredictWebcam(request):
                 nparr = np.frombuffer(image_file, np.uint8)
                 frame = cv2.imdecode(nparr, cv2.IMREAD_COLOR)
                 preprocessedImage = preprocess_image(frame)
+                
                 hairstyles = get_hairstyles_for_face_shape(preprocessedImage)
-                image_store = []
-                for hairstyle in hairstyles:
-                    swapped_image = swap_hair(frame, hairstyle.image_path)
-                    ret, buffer = cv2.imencode('.jpg', swapped_image)
-                    image_as_string = base64.b64encode(buffer).decode('utf-8')
-                    image_store.append(image_as_string)
+                # image_store = []
+                # for hairstyle in hairstyles:
+                #     swapped_image = swap_hair(frame, hairstyle.image_path)
+                #     ret, buffer = cv2.imencode('.jpg', swapped_image)
+                #     image_as_string = base64.b64encode(buffer).decode('utf-8')
+                #     image_store.append(image_as_string)
                     
-                return render(request, 'predictedFace.html', {
+                return render(request, 'preditedFace_webcam.html', {
                     'prediction': preprocessedImage,
-                    'hairstyles': hairstyles,
-                    'image_data': image_store,
+                    'hairstyles': hairstyles
                 })
         except:
             return render(request,"error_handle.html")

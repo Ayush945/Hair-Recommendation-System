@@ -11,6 +11,7 @@ import numpy as np
 import scipy.sparse
 from scipy.sparse.linalg import spsolve
 
+#load the model
 model = load_model(r'E:\Class\Course Material\L6\Sem 2\Models\model.h5', custom_objects={'mse': mean_squared_error})
 
 def load_image(path,as_gray = False):
@@ -123,6 +124,7 @@ def refine_hair_mask(mask):
 
   return refined_mask
 
+#Function to swap the hair from target to source
 def swap_hair(source_filename, target_filename):
     
     source_img = source_filename

@@ -1,10 +1,12 @@
 from django.urls import path
 from . import shapeprediction
-from .views import webcam_page,photo_page,home,rule_based_photo_page,rule_based_webcam_page,add_data_page,add_hair,error_handle
+from .views import webcam_page,photo_page,home,rule_based_photo_page,rule_based_webcam_page,add_data_page,add_hair,error_handle,tryhaircolor
 from .upload_image import webcam_face
 from .rule_based_photo import ruleBasedPredictPhoto
 from.rule_based_webcam import ruleBasedPredictWebcam
 from .data_addition import add_data,add_hair_data
+from .haircolor import accept_input
+
 urlpatterns = [
     #path for home page
     path('',home),
@@ -35,4 +37,8 @@ urlpatterns = [
     #path to add hairstyle to database
     path('add_hair',add_hair),
     path('add_hair_data/',add_hair_data, name='add_hair_data'),
+
+    #path to try Hair color
+    path('tryhaircolor',tryhaircolor,name='tryhaircolor'),
+    path('hair_color/',accept_input,name='hair_color'),
 ]                   

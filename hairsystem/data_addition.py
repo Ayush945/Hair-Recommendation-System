@@ -2,6 +2,8 @@ from .models import Hairstyle, FaceShape
 from django.shortcuts import render, redirect
 from .forms import FaceShapeForm
 
+
+#function to add face to database
 def add_data(request):
   if request.method == 'POST':
     givenFace=request.POST.get('face_shape')
@@ -10,6 +12,7 @@ def add_data(request):
     return render(request, 'add_data.html')
   return render(request, 'add_data.html')
 
+#function to add hairstyle to database
 def add_hair_data(request):
   if request.method == 'POST':
     givenHairStyle=request.POST.get('hair_style')
